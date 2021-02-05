@@ -3,6 +3,8 @@ package com.ipiecoles.java.java350.model;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.LocalDateAssert;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDate;
 
@@ -68,6 +70,30 @@ public class EmployeTest {
         Integer nbAnneeAnciennete = employe.getNombreAnneeAnciennete();
         //Then
         Assertions.assertThat(nbAnneeAnciennete).isEqualTo(0);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1, 'T12345', 0, 1.0, 1000.0",
+            "1, 'T12345', 0, 0.5, 500.0",
+            "2, 'T12345', 0, 1.0, 2300.0",
+            "1, 'M12345', 0, 1.0, 1700.0",
+    })
+    public void testGetPrimeAnnuelle(Integer performance, String matricule,
+                                     Long nbAnneeAnciennete, Double tempsPartiel, Double primeCalculee){
+        //Given
+        Employe employe2 = new Employe("Doe", "John", matricule,
+                LocalDate.now().minusYears(nbAnneeAnciennete), Entreprise.SALAIRE_BASE,
+                performance, tempsPartiel);
+        Employe employe = new Employe();
+        employe.setMatricule(matricule);
+        employe.setPerformance(performance);
+        employe.setTempsPartiel(tempsPartiel);
+        employe.setDateEmbauche(LocalDate.now().minusYears(nbAnneeAnciennete));
+        //When
+        Double prime = employe.getPrimeAnnuelle();
+        //Then
+        Assertions.assertThat(prime).isEqualTo(primeCalculee);
     }
 
 }
